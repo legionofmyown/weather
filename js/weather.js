@@ -33,23 +33,29 @@ Weather.getWeather = function(lat, lon) {
 Weather.currentSunPosition = function() {
 	var curDate = new Date();
 	var curDiff = curDate - Weather.sunrise;
+
 	var percDiff = Math.round(curDiff / Weather.dayLength * 100);
 	
-	if(percDiff < 0 || percDiff > 100) {
-		percDiff = -1;
+	if(percDiff > 100) {
+		percDiff -= 100;
+        percDiff *= -1;
 	}
-	
+
 	return percDiff;
 };
 
-Weather.showWeather = function(container, sun) {
+Weather.showWeather = function(container, sun, moon) {
     var imgURL = "http://openweathermap.org/img/w/" + Weather.icon + ".png";
     var perc = Weather.currentSunPosition();
 
-    if(perc === -1) {
+    if(perc < 0) {
         sun.hide();
+        moon.attr('src', 'img/' + Moon.getImage());
+        moon.show();
+        moon.css('left', Math.round(((container.width() + moon.width()) / 100 * -perc - moon.width() )) + 'px');
         container.css('background-color', '#000');
     } else {
+        moon.hide();
         sun.show();
         sun.css('left', Math.round(((container.width() + sun.width()) / 100 * perc - sun.width() )) + 'px');
         container.css('background-color', '#aaf');

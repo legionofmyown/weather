@@ -7,8 +7,10 @@
 }
 
 #map img.rotated {
+    -webkit-transform: rotate3d(1, 0, 0, 50deg);
     transform: rotate3d(1, 0, 0, 50deg);
     margin-top: 50px;
+    -webkit-transition: 3s;
     transition: 3s;
 }
 
@@ -25,12 +27,17 @@
 	overflow: hidden;
 }
 
-#weather-sun {
+#weather-sun, #weather-moon {
 	display: none;
 	position: absolute;
 	top: 0;
 	left: 0;
     z-index: 1;
+}
+
+#weather-moon {
+    filter: invert(1);
+    -webkit-filter: invert(1);
 }
 
 #weather-temp {

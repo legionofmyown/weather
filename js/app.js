@@ -32,7 +32,8 @@ app.showWeather = function() {
     if(Weather.loaded) {
         var container = $('#weather-container');
         var sun = $('#weather-sun');
-        Weather.showWeather(container, sun);
+        var moon = $('#weather-moon');
+        Weather.showWeather(container, sun, moon);
 
         $('#map img').addClass('rotated');
     } else if(!Weather.failed) {
