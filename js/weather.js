@@ -4,24 +4,27 @@ var Weather = {
 	sunset: null,
 	dayLength: null,
 	loaded: false,
+    failed: false
 };
 
 Weather.getWeather = function(lat, lon) {
 	var url = "http://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&units=metric";
-	console.log(url);
+
 	$.ajax(
 		url,
 		{
 			success: function(data) {
-				var curDate = new Date();
-				console.log(data);
 				Weather.icon = data.weather[0].icon;
 				Weather.sunrise = new Date(data.sys.sunrise * 1000);
 				Weather.sunset = new Date(data.sys.sunset * 1000);
 				Weather.dayLength = Weather.sunset - Weather.sunrise;
 				Weather.temp = data.main.temp;
 				Weather.loaded = true;
-			}
+			},
+            error: function() {
+                alert('Sorry, your current weather is unknown.');
+                Weather.failed = true;
+            }
 		}
 	);
 	
@@ -36,29 +39,23 @@ Weather.currentSunPosition = function() {
 		percDiff = -1;
 	}
 	
-	//percDiff = -1;
 	return percDiff;
 };
 
 Weather.showWeather = function(container, sun) {
-	if(Weather.loaded) {
-		var imgURL = "http://openweathermap.org/img/w/" + Weather.icon + ".png";
-		var perc = Weather.currentSunPosition();
-		
-		if(perc === -1) {
-			sun.hide();
-			container.css('background-color', '#000');
-		} else {
-			sun.show();
-			sun.css('left', Math.round(((container.width() + sun.width()) / 100 * perc - sun.width() )) + 'px');
-			container.css('background-color', '#aaf');
-		}
-		$('#weather-temp').remove();
-		container.append($("<img id='weather-icon' src='" + imgURL + "'>"));
-		container.append($("<span id='weather-temp'>" + Weather.temp + " &deg;C</span>"));
-	} else {
-		setTimeout(function() {
-			Weather.showWeather(container, sun);
-		}, 300);
-	}
+    var imgURL = "http://openweathermap.org/img/w/" + Weather.icon + ".png";
+    var perc = Weather.currentSunPosition();
+
+    if(perc === -1) {
+        sun.hide();
+        container.css('background-color', '#000');
+    } else {
+        sun.show();
+        sun.css('left', Math.round(((container.width() + sun.width()) / 100 * perc - sun.width() )) + 'px');
+        container.css('background-color', '#aaf');
+    }
+    $('#weather-icon').remove();
+    $('#weather-temp').remove();
+    container.prepend($("<img class='floating left' id='weather-icon' src='" + imgURL + "' width='100' height='100'>"));
+    container.prepend($("<div class='floating right' id='weather-temp'>" + Math.round(Weather.temp) + " &deg;C</div>"));
 };
