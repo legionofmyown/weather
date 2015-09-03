@@ -4,7 +4,9 @@ var Weather = {
 	sunset: null,
 	dayLength: null,
 	loaded: false,
-    failed: false
+    failed: false,
+    locationName: "",
+    weatherName: ""
 };
 
 Weather.getWeather = function(lat, lon) {
@@ -14,12 +16,15 @@ Weather.getWeather = function(lat, lon) {
 		url,
 		{
 			success: function(data) {
+                console.log(data);
 				Weather.icon = data.weather[0].icon;
 				Weather.sunrise = new Date(data.sys.sunrise * 1000);
 				Weather.sunset = new Date(data.sys.sunset * 1000);
 				Weather.dayLength = Weather.sunset - Weather.sunrise;
 				Weather.temp = data.main.temp;
 				Weather.loaded = true;
+                Weather.locationName = data.name;
+                Weather.weatherName = data.weather[0].main;
 			},
             error: function() {
                 alert('Sorry, your current weather is unknown.');
